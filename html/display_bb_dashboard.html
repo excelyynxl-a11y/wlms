@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Weightlifting Barbell Setup Loader</title>
+        <link rel="stylesheet" href="../css/styles.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Barbell Setup Loader</h1>
+            
+            <div class="input-section">
+                <div class="form-group">
+                    <!-- gender input start -->
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="FEMALE">Female</option>
+                        <option value="MALE">Male</option>
+                    </select>
+                    <!-- gender input ends -->
+                </div>
+
+                <div class="form-group">
+                    <!-- attempt weight input start -->
+                    <label for="weight">Attempt weight</label>
+                    <input type="number" id="weight" min="20" step="1" placeholder="Enter attmept weight">
+                    <!-- attempt weight input ends -->
+                </div>
+
+                <!-- button to load start -->
+                <button onclick="setupBarbell()" id="load-barbell-btn">Load Barbell Setup</button>
+                <!-- button to load ends -->
+
+                <!-- error message display start -->
+                <div id="error-message" class="error" style="display: none;"></div>
+                <!-- error message display ends -->
+            </div>
+
+            <div id="barbell-display">  <!-- style="display: none;" -->
+                <div class="barbell-display">
+                    <h2>Barbell Setup</h2>
+                    <div id="barbell-container" class="barbell-container"></div>
+                    <div id="weight-info" class="weight-info"></div>
+                </div> 
+            </div>
+        </div>
+
+        <script src="../js/displaybb.js"></script>
+    </body>
+</html>

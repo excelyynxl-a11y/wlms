@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Participant</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+    <h1>Register</h1>
+    <div class="page-center">
+        <div class="center-container">
+            <div class="form-group">
+                <!-- name input start -->
+                <label for="name">Name</label>
+                <input type="text" id="participant-name" placeholder="Insert name">
+                <!-- name input ends -->
+            </div>
+
+            <div class="form-group">
+                <!-- age input start -->
+                <label for="age">Age (mininum 12 years old)</label>
+                <input type="number" id="participant-age" min="12" placeholder="Insert age">
+                <!-- age input ends -->
+            </div>
+
+            <div class="form-group">
+                <!-- gender input start -->
+                <label for="gender">Gender</label>
+                <select id="participant-gender">
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="MALE">Male</option>
+                </select>
+                <!-- gender input ends -->
+            </div>
+
+            <div class="form-group">
+                <!-- bodyweight input start -->
+                <label for="weight">Weight (kg)</label>
+                <input type="number" id="participant-weight" min="1" placeholder="Insert bodyweight">
+                <!-- bodyweight input ends -->
+            </div>
+
+            <button id="register-btn" onclick="registerParticipant()">Register</button>
+        </div>
+    </div>
+
+    <!-- custom "participant successfully registered" popup -->
+    <div id="register-success-popup" class="popup" style="display:none">
+        <div id="register-success-popup-content"  class="popup-content">
+            <div id="popup-message">
+                <span id="participant-registered-name">Example name</span>
+                sucessfully registered.
+            </div>
+        </div>
+    </div> 
+</body>
+<script src="../js/register.js"></script>
+
+</html>
