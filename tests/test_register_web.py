@@ -3,6 +3,7 @@ from selenium import webdriver
 import json # read localStorage
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 
 class TestRegisterWeb(unittest.TestCase):
@@ -12,11 +13,15 @@ class TestRegisterWeb(unittest.TestCase):
         Method to setup driver to access live server in Chrome.
         Prepare environment for each test.
         """
-        self.driver = webdriver.Chrome() # launches a new Chrome crowser window
-        self.driver.implicitly_wait(5) # wait up to 5s for elements to appear befroe throwing an error
-        # self.driver.get('http://127.0.0.1:5500/html/register_dashboard.html') 
+        chrome_options = Options()
+        chrome_options.add_argument("--headless") # run Chrome without the popup UI
+        chrome_options.add_argument("--no-sandbox") # required for Linux CI
+        chrome_options.add_argument("--disable-dev-shm-usage") # prevent resource issues
+        chrome_options.add_argument("--window-size=1920,1080") # ensure elements to be clicked are all within window
 
-        self.driver.get('http://127.0.0.1:5500/html/nav_bar.html') 
+        self.driver = webdriver.Chrome(options=chrome_options) # launches a new Chrome browser window
+        self.driver.implicitly_wait(5) # wait up to 5s for elements to appear befroe throwing an error
+        self.driver.get('http://127.0.0.1:5502/D1_WeightliftingManagementSystem/html/homepage.html') # homepage is the single entry point of the WLMS 
         self.driver.find_element(By.XPATH, "//a[@href='#register']").click()
 
     def tearDown(self):
@@ -29,37 +34,30 @@ class TestRegisterWeb(unittest.TestCase):
         finally:
             self.driver.quit() # close entire window, end WebDriver session
 
-    # def test_page_title(self):
-    #     """
-    #     TC1: check page title is "Register Participant"
-    #     """
-    #     expected_page_title = "Register Participant"
-    #     self.assertIn(expected_page_title, self.driver.title)
-
     def test_name_input_exist(self):
         """
-        TC2: check existance of name input  
+        TC11.1: check existance of name input  
         """
         name_input = self.driver.find_element(By.ID, "participant-name")
         self.assertIsNotNone(name_input) 
 
     def test_age_input_exist(self):
         """
-        TC3: check existance of age input  
+        TC11.2: check existance of age input  
         """
         age_input = self.driver.find_element(By.ID, "participant-age") 
         self.assertIsNotNone(age_input)
 
     def test_gender_input_exist(self):
         """
-        TC4: check existance of gender input  
+        TC11.3: check existance of gender input  
         """
         gender_input = self.driver.find_element(By.ID, "participant-gender") 
         self.assertIsNotNone(gender_input)
 
     def test_only_female_and_male_gender_option_exist(self):
         """
-        TC5: check existance of female and male gender option only 
+        TC11.4: check existance of female and male gender option only 
         """
         gender_input_select = Select(self.driver.find_element(By.ID, "participant-gender") )
         option_values = [option.get_attribute("value") for option in gender_input_select.options if option.get_attribute("value")]
@@ -68,20 +66,21 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_weight_input_exist(self):
         """
-        TC6: check existance of weight input  
+        TC11.5: check existance of weight input  
         """
         weight_input = self.driver.find_element(By.ID, "participant-weight") 
         self.assertIsNotNone(weight_input)
 
     def test_register_button_exist(self):
         """
-        TC7: check exitance of "register" button  
+        TC11.6: check exitance of "register" button  
         """
         register_button = self.driver.find_element(By.ID, "register-btn") 
         self.assertIsNotNone(register_button)
 
     def templete_fill_form_and_submit(self, name, age, gender, weight):
         """
+        Helper method. 
         Templete for submitting a form by clicking the "Register" button.
         """
         driver = self.driver 
@@ -102,6 +101,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def get_localStorage(self):
         """
+        Helper method.
         Method to open local storage so that validation of data storing can be done.
         """
         data = self.driver.execute_script("return localStorage.getItem('participants')")
@@ -109,7 +109,7 @@ class TestRegisterWeb(unittest.TestCase):
     
     def test_click_enter(self):
         """
-        TC8: Test all valid participant input (name = Kelly, age = 30, gender = FEMALE, weight 50) can be stored in localStorage
+        TC11.7: Test all valid participant input (name = Kelly, age = 30, gender = FEMALE, weight 50) can be stored in localStorage
         upon clicking "enter" instead of clicking button
         """
         name = "Kelly"
@@ -139,7 +139,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_all_valid_input_can_register_and_stored(self):
         """
-        Test all valid participant input (name = Kelly, age = 30, gender = FEMALE, weight 50) can be stored in localStorage
+        TC11.8: Test all valid participant input (name = Kelly, age = 30, gender = FEMALE, weight 50) can be stored in localStorage
         """
         name = "Kelly"
         age =  30
@@ -152,7 +152,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_empty_name_input_cannot_register_not_stored_trigger_alert(self):
         """
-        Test name input left empty, participant cannot be stored in localStorage and trigger alert
+        TC11.9: Test name input left empty, participant cannot be stored in localStorage and trigger alert
         """
         name = ""
         age =  "50"
@@ -171,7 +171,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_empty_age_input_cannot_register_not_stored_trigger_alert(self):
         """
-        Test age input left empty, participant cannot be stored in localStorage and trigger alert
+        TC11.10: Test age input left empty, participant cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  ""
@@ -190,7 +190,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_empty_gender_input_cannot_register_not_stored_trigger_alert(self):
         """
-        Test gender input left empty, participant cannot be stored in localStorage and trigger alert
+        TC11.11: Test gender input left empty, participant cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  "50"
@@ -209,7 +209,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_empty_weight_input_cannot_register_not_stored_trigger_alert(self):
         """
-        Test weight input left empty, participant cannot be stored in localStorage and trigger alert
+        TC11.12: Test weight input left empty, participant cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  "50"
@@ -228,7 +228,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_age_11_cannot_register_not_stored_trigger_alert(self):
         """
-        Test participant age = 11 cannot be stored in localStorage and trigger alert
+        TC11.13: Test participant age = 11 cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  11
@@ -247,7 +247,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_age_12_can_register_and_stored(self):
         """
-        Test valid participant age = 12 can be stored in localStorage 
+        TC11.14: Test valid participant age = 12 can be stored in localStorage 
         """
         name = "Kelly"
         age =  12
@@ -262,7 +262,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_age_13_can_register_and_stored(self):
         """
-        Test valid participant age = 13 can be stored in localStorage 
+        TC11.15: Test valid participant age = 13 can be stored in localStorage 
         """
         name = "Kelly"
         age =  13
@@ -277,7 +277,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_negative_weight_cannot_register_not_stored_trigger_alert(self):
         """
-        Test participant weight = 0kg cannot be stored in localStorage and trigger alert
+        TC11.15: Test participant weight = 0kg cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  50
@@ -296,7 +296,7 @@ class TestRegisterWeb(unittest.TestCase):
     
     def test_weight_0kg_cannot_register_not_stored_trigger_alert(self):
         """
-        Test participant weight = 0kg cannot be stored in localStorage and trigger alert
+        TC11.16: Test participant weight = 0kg cannot be stored in localStorage and trigger alert
         """
         name = "Kelly"
         age =  50
@@ -315,7 +315,7 @@ class TestRegisterWeb(unittest.TestCase):
 
     def test_weight_1kg_can_register_and_stored(self):
         """
-        Test participant weight = 1kg can be stored in localStorage 
+        TC11.17: Test participant weight = 1kg can be stored in localStorage 
         """
         name = "Kelly"
         age =  50
@@ -327,6 +327,7 @@ class TestRegisterWeb(unittest.TestCase):
         storage = self.get_localStorage()
         self.assertIsNotNone(storage)
         self.assertTrue(any(p["name"] == name for p in storage)) 
+
 
 
 
