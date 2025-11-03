@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WLMS</title>
+    <link rel="stylesheet" href="../css/homepage.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+<body>
+
+    <!-- Lower bar -->
+    <div id = "navbar" class="navbar">
+
+        <!-- register icon button start -->
+        <a class="menu-btn" href="#register" onclick="loadContent('register_dashboard.html')">
+          <div>
+            <span class="material-symbols-sharp">
+              app_registration
+            </span>
+          </div>
+        </a>
+        <!-- register icon button end -->
+
+        <!-- barbell icon button start -->
+        <a class="menu-btn" href="#display_bb" onclick="loadContent('display_bb_dashboard.html')">
+          <div>
+            <span class="material-symbols-sharp">
+              fitness_center
+            </span>
+          </div>
+        </a>
+        <!-- barbell icon button end -->
+
+        <!-- eye icon button start -->
+        <a class="menu-btn" href="#view" onclick="loadContent('view_dashboard.html')">
+          <div>
+            <span class="material-symbols-sharp">
+              visibility
+            </span>
+          </div>
+        </a>
+        <!-- eye icon button end -->
+
+        <!-- X icon button start -->
+        <a class="menu-btn" href="#quit" onclick="document.getElementById('popupquitconfiramation').style.display = 'flex'">
+          <div>
+            <span class="material-symbols-sharp">
+              close
+            </span>
+          </div>
+        </a>
+        <!-- X icon button end -->
+
+    </div>
+
+    <!-- popup container for "are you sure you want to quit" start-->
+    <div id="popupquitconfiramation" class="popup" style="display: none">
+        <div class="popup-content">
+            <h2>Are you sure you want to quit this session?</h2>
+            <div class="yes-no-button-container">
+                <button id="quit-session-btn" onclick="quitSession()">Yes</button>
+                <button id="stay-session-btn" onclick="document.getElementById('popupquitconfiramation').style.display = 'none'">No</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Main content -->
+    <div id="content" class="content">
+    </div>
+
+    <!-- script for loading content into content div -->
+    <script>
+      function loadContent(page) {
+        fetch(page)
+          .then(response => {
+            if (!response.ok) throw new Error('Page not found');
+            return response.text();
+          })
+          .then(data => {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = data;
+
+            // execute any scripts in the loaded HTML
+            const scripts = contentDiv.querySelectorAll("script");
+            scripts.forEach(oldScript => {
+              const newScript = document.createElement("script");
+              if (oldScript.src) {
+                // if an external script 
+                newScript.src = oldScript.src;
+              } else {
+                // if inline script code
+                newScript.textContent = oldScript.textContent;
+              }
+              document.body.appendChild(newScript); // add new script
+            });
+
+            // ensure registered participant data can be reflectde in view_dashoboard.html
+            if (page.includes("view_dashboard.html") && typeof loadParticipants === "function") {
+              loadParticipants();
+            }
+
+            // universal function to handle "enter"
+            // when "enter" is detected, the callback is performed
+            function handleEnterKey(event, callback) { // add a callable as paramemter
+                if (event.key === 'Enter'){
+                    event.preventDefault();
+                    if (typeof callback === "function"){
+                      callback();
+                    }
+                }
+            }
+
+            // ensure hitting "enter" can load barbell in display_bb_dashboard.html
+            if (page.includes("display_bb_dashboard.html")) {
+              const weightInput = document.getElementById('weight');
+              weightInput.addEventListener('keyup', (event) => handleEnterKey(event, setupBarbell));
+            }
+
+            // ensure hitting "enter" will register a participant
+            if (page.includes("register_dashboard.html")) {
+              const nameInput = document.getElementById('participant-name');
+              const ageInput = document.getElementById('participant-age');
+              const genderInput = document.getElementById('participant-gender');
+              const weightInput = document.getElementById('participant-weight');
+              nameInput.addEventListener('keyup', (event) => handleEnterKey(event, registerParticipant));
+              ageInput.addEventListener('keyup', (event) => handleEnterKey(event, registerParticipant));
+              genderInput.addEventListener('keyup', (event) => handleEnterKey(event, registerParticipant));
+              weightInput.addEventListener('keyup', (event) => handleEnterKey(event, registerParticipant));
+            }
+
+          })
+          .catch(error => {
+            document.getElementById('content').innerHTML =
+              `<p style="color:red;">Error loading ${page}: ${error}</p>`;
+          });
+      }
+    </script>
+    
+    <!-- script for quiting session -->
+    <script>
+      function quitSession(){
+        window.location.href = "about:blank";
+      }
+    </script>
+
+    <!-- script files for each page -->
+    <script src="../js/displaybb.js"></script>
+    <script src="../js/edit.js"></script>
+    <script src="../js/register.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/view.js"></script>
+</body>
+</html>
