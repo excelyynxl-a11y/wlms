@@ -1,3 +1,5 @@
+
+// Equipment object
 class Equipment {
     constructor(weight){
         this.weight = weight;
@@ -80,13 +82,16 @@ class SmallWhitePlate extends Equipment {
     }
 }
  
+// barbells
 const barbells = {
     "FEMALE": new FemaleBar(),
     "MALE" : new MaleBar()
 };
 
+// clips
 const clips = [new Clip(), new Clip()]; 
 
+// plate racks
 const platesRack = [
     new RedPlate(),
     new BluePlate(),
@@ -99,6 +104,8 @@ const platesRack = [
     new SmallWhitePlate()
 ];
 
+
+// fucntion to validate attempt
 function validateAttempt(partcipantGender, attemptWeight){
     const genderMinimumAttemptWeight = {
         "FEMALE": 20,
@@ -113,6 +120,8 @@ function validateAttempt(partcipantGender, attemptWeight){
         throw new Error(`${partcipantGender} must lift at least ${genderMinimumAttemptWeight[partcipantGender]}`);
     }
 }
+
+// function to sum up weight of all equipments
 function calculateTotalWeight(barbellSetup) {
     let totalWeight = 0;
     for (let item of barbellSetup) {
@@ -225,6 +234,7 @@ function setupBarbell(){
         errorDiv.style.display = 'block';
         document.getElementById('barbell-display').style.display = 'none';
     }
+
 } 
 
 function displayBarbell(orderedSetup, totalWeight) {

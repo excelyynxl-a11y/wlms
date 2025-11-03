@@ -56,6 +56,7 @@ function determineCategory(gender, weight){
         98: "M98",
         110: "M110"
     }
+    
 
     if (gender === "FEMALE"){
         let keys = Object.keys(femaleCategories).map(Number).sort((a,b) => a - b);
